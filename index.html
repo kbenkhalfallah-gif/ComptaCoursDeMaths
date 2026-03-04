@@ -1,4 +1,28 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Compta Cours de Maths</title>
+  <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.6/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    // localStorage shim for window.storage
+    window.storage = {
+      get: async (key) => {
+        const value = localStorage.getItem(key);
+        return value ? { value } : null;
+      },
+      set: async (key, value) => {
+        localStorage.setItem(key, value);
+      },
+    };
+
+    const { useState, useEffect, useCallback, useMemo } = React;
 
 // ════════════════════════════════════════════
 // STORAGE
@@ -112,7 +136,7 @@ const T = {
 // ════════════════════════════════════════════
 // MAIN APP
 // ════════════════════════════════════════════
-export default function App() {
+function App() {
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState("accueil");
   const [clients, setClients] = useState([]);
@@ -1106,3 +1130,9 @@ function ModalConfirm({ message, onConfirm, onClose }) {
     </Overlay>
   );
 }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
+</body>
+</html>
