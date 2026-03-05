@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Maths Cours — Comptabilité</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0e14;--surface:#141820;--card:#1a1f2b;--border:#262d3d;--border-focus:#4a7cff;--primary:#4a7cff;--primary-soft:#4a7cff22;--success:#2dd4a0;--success-soft:#2dd4a020;--warning:#f0b429;--warning-soft:#f0b42920;--danger:#ef6461;--danger-soft:#ef646120;--accent:#b07cff;--text:#e4e8f1;--text-sec:#8b95a8;--text-mut:#5a6478;--white:#fff}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%;overflow:hidden}body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text)}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--border-focus)!important}button{font-family:inherit;cursor:pointer}button:active{transform:scale(.97)}
+#app{display:flex;flex-direction:column;height:100vh;max-width:600px;margin:0 auto}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.header-title{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:700}.header-count{font-size:11px;color:var(--text-mut)}
+main{flex:1;overflow-y:auto;padding:16px;padding-bottom:8px}
+nav{background:var(--surface);border-top:1px solid var(--border);display:flex;flex-shrink:0}
+nav button{flex:1;padding:8px 4px 12px;background:none;border:none;color:var(--text-mut);display:flex;flex-direction:column;align-items:center;gap:2px;border-top:2px solid transparent;transition:all .2s;font-size:10px}
+nav button.active{color:var(--primary);border-top-color:var(--primary);font-weight:600}nav button .tab-icon{font-size:18px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:16px;margin-bottom:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:10px;padding:10px 18px;font-weight:600;font-size:14px;color:var(--white);transition:all .2s}
+.btn-primary{background:var(--primary)}.btn-success{background:var(--success)}.btn-danger{background:var(--danger)}.btn-warning{background:var(--warning)}.btn-muted{background:var(--text-mut)}
+.btn-full{width:100%}.btn-small{padding:6px 12px;font-size:12px}.btn-outline{background:transparent;border:1.5px solid}
+.btn-outline-primary{color:var(--primary);border-color:var(--primary)}.btn-outline-muted{color:var(--text-sec);border-color:var(--text-sec)}.btn-outline-danger{color:var(--danger);border-color:var(--danger)}
+.btn-big{padding:14px 20px;font-size:16px;border-radius:14px}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-primary{background:var(--primary-soft);color:var(--primary)}.badge-success{background:var(--success-soft);color:var(--success)}.badge-warning{background:var(--warning-soft);color:var(--warning)}.badge-accent{background:#b07cff20;color:var(--accent)}
+.field{margin-bottom:12px}.field label{display:block;font-size:12px;font-weight:600;color:var(--text-sec);margin-bottom:6px}
+.field input,.field select{width:100%;padding:10px 14px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;font-family:inherit}
+.field select{cursor:pointer}textarea{font-family:inherit}
+.row{display:flex;gap:10px}.row>*{flex:1}.row-3{display:flex;gap:6px}.row-3>*{flex:1}
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.kpi{border-radius:12px;padding:14px}.kpi-value{font-size:22px;font-weight:700}.kpi-label{font-size:11px;color:var(--text-sec)}
+.kpi-primary{background:var(--primary-soft);border:1px solid #4a7cff30}.kpi-primary .kpi-value{color:var(--primary)}
+.kpi-success{background:var(--success-soft);border:1px solid #2dd4a030}.kpi-success .kpi-value{color:var(--success)}
+.kpi-warning{background:var(--warning-soft);border:1px solid #f0b42930}.kpi-warning .kpi-value{color:var(--warning)}
+.kpi-accent{background:#b07cff15;border:1px solid #b07cff30}.kpi-accent .kpi-value{color:var(--accent)}
+.empty{text-align:center;padding:36px 20px;color:var(--text-mut)}.empty-icon{font-size:32px;margin-bottom:8px}.empty-text{font-size:13px}
+.list-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}.list-item:last-child{border-bottom:none}
+.mono{font-family:'DM Mono',monospace}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);display:flex;align-items:flex-end;justify-content:center;z-index:200;animation:fadeIn .2s ease}
+.modal{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-width:500px;max-height:88vh;overflow-y:auto;padding:20px;border:1px solid var(--border);animation:slideUp .3s ease}
+.modal-title{font-size:18px;font-weight:700;margin-bottom:16px}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);padding:10px 22px;border-radius:12px;font-weight:600;font-size:13px;z-index:300;white-space:nowrap;box-shadow:0 4px 24px rgba(0,0,0,.5);animation:toastIn .3s ease;color:var(--white)}
+.toast-success{background:var(--success)}.toast-danger{background:var(--danger)}
+.participant-card{background:var(--bg);border-radius:10px;padding:12px;margin-bottom:8px;border:1px solid var(--border)}
+.step-summary{font-size:13px;color:var(--text-sec);margin-bottom:10px}
+.card-clickable{cursor:pointer;transition:border-color .2s}.card-clickable:hover{border-color:#363b4a}
+.seance-item{padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer}.seance-item:last-child{border-bottom:none}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}.stat-row.faded{opacity:.35}
+.stats-card-gradient{background:linear-gradient(135deg,var(--card) 0%,#4a7cff10 100%)}
+.sms-box{background:var(--bg);border-radius:10px;padding:14px;border:1px solid var(--border);margin-bottom:14px;white-space:pre-wrap;font-size:13px;line-height:1.6}
+.check-label{display:flex;align-items:center;gap:8px;margin-bottom:12px;cursor:pointer;font-size:13px;color:var(--text-sec)}.check-label input{width:18px;height:18px;accent-color:var(--primary)}
+.search-bar{flex:1;padding:10px 14px;background:var(--card);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:13px;outline:none;font-family:inherit}
+.divider{height:1px;background:var(--border);margin:16px 0}
+@keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.btn-icon{background:none;border:none;cursor:pointer;font-size:16px;padding:4px}
+</style>
+</head>
+<body>
+<div id="app">
+  <header role="banner"><div class="header-title"><span role="img" aria-label="Maths">📐</span><span>Maths Cours</span></div><div class="header-count" id="headerCount">0 client</div></header>
+  <main id="mainContent" role="main"></main>
+  <nav role="tablist" aria-label="Navigation principale">
+    <button role="tab" aria-label="Accueil" data-tab="accueil" class="active" onclick="switchTab('accueil')"><span class="tab-icon">🏠</span><span>Accueil</span></button>
+    <button role="tab" aria-label="Dettes" data-tab="dettes" onclick="switchTab('dettes')"><span class="tab-icon">💶</span><span>Dettes</span></button>
+    <button role="tab" aria-label="Statistiques" data-tab="stats" onclick="switchTab('stats')"><span class="tab-icon">📊</span><span>Stats</span></button>
+    <button role="tab" aria-label="Historique" data-tab="histo" onclick="switchTab('histo')"><span class="tab-icon">📋</span><span>Historique</span></button>
+    <button role="tab" aria-label="Clients" data-tab="clients" onclick="switchTab('clients')"><span class="tab-icon">👥</span><span>Clients</span></button>
+  </nav>
+</div>
+<div id="modalContainer"></div>
+<div id="toastContainer"></div>
+<script>
+const STORAGE_KEY="maths-cours-data";
+let data={clients:[],eleves:[],seances:[],historique:[],caisse:{maths:0,autres:0,autresEnAttente:0},lastModified:null};
+function loadData(){try{const raw=localStorage.getItem(STORAGE_KEY);if(raw){const p=JSON.parse(raw);data={clients:[],eleves:[],seances:[],historique:[],caisse:{maths:0,autres:0,autresEnAttente:0},lastModified:null,...p};if(!data.caisse)data.caisse={maths:0,autres:0,autresEnAttente:0};if(!data.caisse.autresEnAttente)data.caisse.autresEnAttente=0;migrateData();}}catch(e){console.error("Erreur:",e);}}
+function migrateData(){data.clients.forEach(c=>{if(!c.dettesInitiales)c.dettesInitiales=[];if(c.detteInitiale&&c.detteInitiale>0&&c.dettesInitiales.length===0){const fe=data.eleves.find(e=>e.clientId===c.id);c.dettesInitiales.push({id:uid(),eleveId:fe?fe.id:"",mois:0,annee:0,montant:c.detteInitiale,heures:0,matiere:"Maths",encaisse:false});}delete c.detteInitiale;c.dettesInitiales.forEach(di=>{if(!di.matiere)di.matiere="Maths";});});}
+function saveData(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}catch(e){}}
+function updateLastModified(){data.lastModified=Date.now();saveData();}
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const pad=(n)=>String(n).padStart(2,"0");
+function today(){const d=new Date();return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;}
+const JOURS=["Dimanche","Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi"];
+const MOIS_NOMS=["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+const MATIERES=["Maths","Français","Anglais","Droit","Autre"];
+function formatDateLong(ds){if(!ds)return"";const[y,m,d]=ds.split("-").map(Number);const dt=new Date(y,m-1,d);return`${JOURS[dt.getDay()]} ${d} ${MOIS_NOMS[m-1]} ${y}`;}
+function formatDateShort(ds){if(!ds)return"";const[y,m,d]=ds.split("-");return`${d}/${m}/${y}`;}
+function formatHeure(h){if(!h)return"";const[hh,mm]=h.split(":");return mm==="00"?`${parseInt(hh)}h`:`${parseInt(hh)}h${mm}`;}
+function calcDuree(debut,fin){if(!debut||!fin)return 0;const[h1,m1]=debut.split(":").map(Number);const[h2,m2]=fin.split(":").map(Number);return Math.max(0,(h2*60+m2-h1*60-m1)/60);}
+function formatDuree(h){if(!h||h<=0)return"0h";const hh=Math.floor(h);const mm=Math.round((h-hh)*60);if(mm===0)return`${hh}h`;if(hh===0)return`${mm}min`;return`${hh}h${pad(mm)}`;}
+function getMonthKey(ds){return ds?ds.slice(0,7):"";}
+function getYear(ds){return ds?ds.slice(0,4):"";}
+function formatTimestamp(ts){if(!ts)return"Jamais";const d=new Date(ts);return`${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} à ${pad(d.getHours())}:${pad(d.getMinutes())}`;}
+function formatMoisAnnee(mois,annee){if(!mois||!annee||mois===0||annee===0)return"Période non précisée";return`${MOIS_NOMS[mois-1]} ${annee}`;}
+const eur=(n)=>new Intl.NumberFormat("fr-FR",{style:"currency",currency:"EUR"}).format(n||0);
+function getClient(id){return data.clients.find(c=>c.id===id);}
+function getEleve(id){return data.eleves.find(e=>e.id===id);}
+function getElevesOfClient(cid){return data.eleves.filter(e=>e.clientId===cid);}
+function esc(s){const d=document.createElement("div");d.textContent=s;return d.innerHTML;}
+
+function renderDateSelect(prefix,dateStr){
+  const[sy,sm,sd]=(dateStr||today()).split("-").map(Number);const curYear=new Date().getFullYear();
+  let jOpts="";for(let d=1;d<=31;d++)jOpts+=`<option value="${d}" ${d===sd?"selected":""}>${d}</option>`;
+  let mOpts=MOIS_NOMS.map((n,i)=>`<option value="${i+1}" ${(i+1)===sm?"selected":""}>${n}</option>`).join("");
+  let aOpts="";for(let y=curYear-2;y<=curYear+1;y++)aOpts+=`<option value="${y}" ${y===sy?"selected":""}>${y}</option>`;
+  return`<div class="row-3"><div class="field" style="margin-bottom:6px"><label>Jour</label><select id="${prefix}Jour" onchange="updateDateFromSelects('${prefix}')" aria-label="Jour">${jOpts}</select></div><div class="field" style="margin-bottom:6px"><label>Mois</label><select id="${prefix}Mois" onchange="updateDateFromSelects('${prefix}')" aria-label="Mois">${mOpts}</select></div><div class="field" style="margin-bottom:6px"><label>Année</label><select id="${prefix}Annee" onchange="updateDateFromSelects('${prefix}')" aria-label="Année">${aOpts}</select></div></div>`;
+}
+function getDateFromSelects(prefix){const j=parseInt(document.getElementById(prefix+"Jour")?.value)||1;const m=parseInt(document.getElementById(prefix+"Mois")?.value)||1;const a=parseInt(document.getElementById(prefix+"Annee")?.value)||new Date().getFullYear();return`${a}-${pad(m)}-${pad(j)}`;}
+function updateDateFromSelects(prefix){seanceForm.date=getDateFromSelects(prefix);}
+function renderTimeSelect(prefix,value){const[ch,cm]=(value||"").split(":").map(Number);let hOpts="<option value=''>--</option>";for(let h=0;h<=23;h++)hOpts+=`<option value="${h}" ${h===ch?"selected":""}>${h}h</option>`;let mOpts="<option value=''>--</option>";for(let m=0;m<60;m+=5)mOpts+=`<option value="${m}" ${m===cm?"selected":""}>${pad(m)}</option>`;return`<div class="row"><div class="field" style="margin-bottom:6px"><label>${prefix==="hd"||prefix==="ehd"?"Heure début":"Heure fin"} (h)</label><select id="${prefix}H" onchange="updateTimeFromSelects()" aria-label="Heure">${hOpts}</select></div><div class="field" style="margin-bottom:6px"><label>Min</label><select id="${prefix}M" onchange="updateTimeFromSelects()" aria-label="Minutes">${mOpts}</select></div></div>`;}
+function updateTimeFromSelects(){const gh=(p)=>{const h=document.getElementById(p+"H")?.value;const m=document.getElementById(p+"M")?.value;return(h!==""&&m!=="")?`${pad(parseInt(h))}:${pad(parseInt(m))}`:"";};const hd=gh("hd")||gh("ehd");const hf=gh("hf")||gh("ehf");if(hd)seanceForm.heureDebut=hd;if(hf)seanceForm.heureFin=hf;const di=document.getElementById("dureeInfo");if(di){const d=calcDuree(seanceForm.heureDebut,seanceForm.heureFin);di.textContent=d>0?"Durée : "+formatDuree(d):"";}}
+
+function getMonthStats(monthKey){
+  const mSeances=data.seances.filter(s=>getMonthKey(s.date)===monthKey&&(s.matiere||"Maths")==="Maths");
+  let ca=0,heures=0;
+  mSeances.forEach(s=>s.participants.forEach(p=>{ca+=p.montant||0;}));
+  heures=mSeances.reduce((a,s)=>a+calcDuree(s.heureDebut,s.heureFin),0);
+  data.clients.forEach(c=>{(c.dettesInitiales||[]).forEach(di=>{if(di.encaisse&&(di.matiere||"Maths")==="Maths"&&di.mois>0&&di.annee>0){if(`${di.annee}-${pad(di.mois)}`===monthKey){ca+=di.montant||0;heures+=di.heures||0;}}});});
+  const[hy,hm]=monthKey.split("-").map(Number);const hist=data.historique.find(h=>h.annee===hy&&h.mois===hm);
+  if(hist){ca+=hist.ca||0;heures+=hist.heures||0;}
+  return{ca,heures,prixMoyen:heures>0?ca/heures:0};
+}
+function getDettesParClient(){
+  const map={};
+  data.clients.forEach(c=>{(c.dettesInitiales||[]).forEach(di=>{if(!di.encaisse){if(!map[c.id])map[c.id]={montant:0,detteLines:[],seancesImpayes:[]};map[c.id].montant+=di.montant||0;map[c.id].detteLines.push({...di,clientId:c.id});}});});
+  data.seances.forEach(s=>{s.participants.forEach(p=>{if(!p.encaisse){const el=getEleve(p.eleveId);if(el){if(!map[el.clientId])map[el.clientId]={montant:0,detteLines:[],seancesImpayes:[]};map[el.clientId].montant+=p.montant||0;map[el.clientId].seancesImpayes.push({...p,seanceId:s.id,date:s.date,heureDebut:s.heureDebut,heureFin:s.heureFin,matiere:s.matiere});}}});});
+  return map;
+}
+function getTotalDettes(){const d=getDettesParClient();return Object.values(d).reduce((a,v)=>a+v.montant,0);}
+function getDettesMaths(){const dpc=getDettesParClient();let t=0;Object.values(dpc).forEach(v=>{v.detteLines.forEach(dl=>{if((dl.matiere||"Maths")==="Maths")t+=dl.montant||0;});v.seancesImpayes.forEach(si=>{if((si.matiere||"Maths")==="Maths")t+=si.montant||0;});});return t;}
+function getDettesAutres(){return getTotalDettes()-getDettesMaths();}
+function showToast(msg,type="success"){const c=document.getElementById("toastContainer");c.innerHTML=`<div class="toast toast-${type}" role="alert">${esc(msg)}</div>`;setTimeout(()=>{c.innerHTML="";},2500);}
+let currentTab="accueil";
+function switchTab(tabId){currentTab=tabId;document.querySelectorAll("nav button").forEach(b=>{b.classList.toggle("active",b.dataset.tab===tabId);b.setAttribute("aria-selected",b.dataset.tab===tabId);});render();}
+function render(){const main=document.getElementById("mainContent");document.getElementById("headerCount").textContent=`${data.clients.length} client${data.clients.length!==1?"s":""} · ${data.eleves.length} élève${data.eleves.length!==1?"s":""}`;if(currentTab==="accueil")main.innerHTML=renderAccueil();else if(currentTab==="dettes")main.innerHTML=renderDettes();else if(currentTab==="stats")main.innerHTML=renderStats();else if(currentTab==="histo")main.innerHTML=renderHisto();else if(currentTab==="clients")main.innerHTML=renderClients();main.scrollTop=0;}
+
+function renderAccueil(){
+  const mk=getMonthKey(today());const ms=getMonthStats(mk);const td=getTotalDettes();const[y,m]=mk.split("-");const monthName=MOIS_NOMS[parseInt(m)-1];
+  const dernieres=[];
+  let seancesHtml="";
+  return`<button class="btn btn-primary btn-full btn-big" onclick="openNewSeance()">+ Enregistrer une séance</button>
+    <div class="card" style="text-align:center;padding:12px;margin-top:10px"><div style="font-size:11px;color:var(--text-mut)">Dernière modification</div><div style="font-size:13px;font-weight:600;color:var(--text-sec);margin-top:2px">${formatTimestamp(data.lastModified)}</div></div>
+    <div class="card"><div style="font-size:13px;font-weight:700;margin-bottom:14px;color:var(--text-sec)">📅 ${monthName} ${y} — Maths</div>
+      <div class="kpi-grid"><div class="kpi kpi-primary"><div class="kpi-label">Chiffre d'affaires</div><div class="kpi-value">${eur(ms.ca)}</div></div><div class="kpi kpi-success"><div class="kpi-label">Heures effectuées</div><div class="kpi-value">${formatDuree(ms.heures)}</div></div><div class="kpi kpi-accent"><div class="kpi-label">Moyenne par heure</div><div class="kpi-value">${eur(ms.prixMoyen)}</div></div><div class="kpi kpi-warning"><div class="kpi-label">Dettes Maths</div><div class="kpi-value">${eur(getDettesMaths())}</div></div><div class="kpi kpi-accent"><div class="kpi-label">Dettes autres matières</div><div class="kpi-value">${eur(getDettesAutres())}</div></div><div class="kpi kpi-warning"><div class="kpi-label">Total dettes</div><div class="kpi-value">${eur(td)}</div></div></div></div>
+    <div class="card"><div style="font-size:13px;font-weight:700;margin-bottom:10px">💰 Caisse réelle</div>
+      <div class="row" style="margin-bottom:8px"><div><div style="font-size:11px;color:var(--text-sec)">Maths</div><div style="font-size:20px;font-weight:700;color:var(--primary)">${eur(data.caisse.maths)}</div></div><div><div style="font-size:11px;color:var(--text-sec)">Autres matières</div><div style="font-size:20px;font-weight:700;color:var(--accent)">${eur(data.caisse.autres)}</div>${data.caisse.autresEnAttente>0?`<div style="font-size:12px;color:var(--warning);margin-top:4px">En attente : ${eur(data.caisse.autresEnAttente)}</div>`:""}</div></div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">${data.caisse.autresEnAttente>0?`<button class="btn btn-success btn-small" onclick="validerTransfert()">✓ Valider le transfert</button>`:""}<button class="btn btn-outline btn-outline-primary btn-small" onclick="openCaisse()">Mettre à jour caisse Maths</button><button class="btn btn-outline btn-outline-muted btn-small" onclick="openCaisseAutres()">Mettre à jour caisse autres</button></div></div>
+    ${seancesHtml}
+    <div class="card"><div style="font-size:13px;font-weight:700;margin-bottom:10px">💾 Sauvegarde</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn btn-outline btn-outline-primary btn-small" onclick="exportDataFile()">⬇ Exporter (fichier)</button><button class="btn btn-outline btn-outline-primary btn-small" onclick="exportDataText()">⬇ Exporter (texte)</button><button class="btn btn-outline btn-outline-muted btn-small" onclick="document.getElementById('importFileInput').click()">⬆ Importer (fichier)</button><input type="file" id="importFileInput" accept=".json" style="display:none" onchange="importFromFile(event)"><button class="btn btn-outline btn-outline-muted btn-small" onclick="openImportTextModal()">⬆ Importer (texte)</button></div></div>`;
+}
+function openCaisse(){openModal(`<h2 class="modal-title">Caisse Maths</h2><div style="font-size:12px;color:var(--text-sec);margin-bottom:14px">Saisissez le montant réel compté.</div><div class="field"><label>Caisse Maths (€)</label><input id="caisseMaths" type="number" step="0.01" value="${data.caisse.maths}"></div><div class="row"><button class="btn btn-outline btn-outline-muted" onclick="closeModal()">Annuler</button><button class="btn btn-primary btn-full" onclick="saveCaisse()">Enregistrer</button></div>`);}
+function saveCaisse(){data.caisse.maths=parseFloat(document.getElementById("caisseMaths").value)||0;updateLastModified();showToast("Caisse mise à jour ✓");closeModal();render();}
+function validerTransfert(){data.caisse.autres+=data.caisse.autresEnAttente;data.caisse.autresEnAttente=0;updateLastModified();showToast("Transfert validé ✓");render();}
+function openCaisseAutres(){openModal(`<h2 class="modal-title">Caisse autres matières</h2><div class="field"><label>Montant (€)</label><input id="caisseAutresVal" type="number" step="0.01" value="${data.caisse.autres}"></div><div class="row"><button class="btn btn-outline btn-outline-muted" onclick="closeModal()">Annuler</button><button class="btn btn-primary btn-full" onclick="data.caisse.autres=parseFloat(document.getElementById('caisseAutresVal').value)||0;updateLastModified();showToast('Caisse mise à jour ✓');closeModal();render();">Enregistrer</button></div>`);}
+
+let detteExpanded={};
+function toggleDette(clientId){detteExpanded[clientId]=!detteExpanded[clientId];document.getElementById("detteContent").innerHTML=renderDettesContent();}
+function renderDettes(){return`<div id="detteContent">${renderDettesContent()}</div>`;}
+function renderDettesContent(){
+  const dpc=getDettesParClient();const td=getTotalDettes();const dm=getDettesMaths();const da=getDettesAutres();const cad=data.clients.filter(c=>dpc[c.id]?.montant>0).sort((a,b)=>(dpc[b.id]?.montant||0)-(dpc[a.id]?.montant||0));
+  let html=`<div class="card" style="text-align:center"><div style="font-size:11px;color:var(--text-mut);margin-bottom:4px">Total des dettes</div><div style="font-size:28px;font-weight:700;color:${td>0?"var(--warning)":"var(--success)"}">${td>0?eur(td):"Aucune dette ✓"}</div><div style="display:flex;justify-content:center;gap:16px;margin-top:10px"><div><div style="font-size:11px;color:var(--text-sec)">Maths</div><div style="font-size:16px;font-weight:700;color:var(--primary)">${eur(dm)}</div></div><div><div style="font-size:11px;color:var(--text-sec)">Autres matières</div><div style="font-size:16px;font-weight:700;color:var(--accent)">${eur(da)}</div></div></div></div>`;
+  if(cad.length===0)return html+`<div class="empty"><div class="empty-icon">✨</div><div class="empty-text">Personne ne vous doit d'argent</div></div>`;
+  cad.forEach(c=>{const dette=dpc[c.id];const expanded=detteExpanded[c.id];
+    html+=`<div class="card" style="cursor:pointer" onclick="toggleDette('${c.id}')"><div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:15px;font-weight:600">${esc(c.nom)} · ${eur(dette.montant)}</div><span style="color:var(--text-mut);font-size:16px">${expanded?"▲":"▼"}</span></div>`;
+    if(expanded){
+      html+=`<div style="margin-top:10px" onclick="event.stopPropagation()">`;
+      const parEleve={};
+      dette.detteLines.forEach(dl=>{const eid=dl.eleveId||"_x";if(!parEleve[eid])parEleve[eid]={dettes:[],seances:[]};parEleve[eid].dettes.push(dl);});
+      dette.seancesImpayes.forEach(si=>{const eid=si.eleveId||"_x";if(!parEleve[eid])parEleve[eid]={dettes:[],seances:[]};parEleve[eid].seances.push(si);});
+      Object.entries(parEleve).forEach(([eid,items])=>{const el=eid!=="_x"?getEleve(eid):null;const en=el?el.prenom:"Non précisé";const st=items.dettes.reduce((a,d)=>a+(d.montant||0),0)+items.seances.reduce((a,s)=>a+(s.montant||0),0);
+        html+=`<div style="margin-bottom:8px"><div style="font-size:12px;font-weight:600;color:var(--accent);margin-bottom:6px;padding:4px 0;border-bottom:1px solid var(--border)">${esc(en)} — ${eur(st)}</div>`;
+        items.dettes.forEach(dl=>{html+=`<div class="list-item"><div><div style="font-size:12px;color:var(--text-sec)">Dette initiale · ${esc(formatMoisAnnee(dl.mois,dl.annee))} · ${esc(dl.matiere||"Maths")}</div><div style="display:flex;gap:6px;margin-top:2px"><span style="font-size:13px;font-weight:600;color:var(--warning)">${eur(dl.montant)}</span>${dl.heures>0?`<span style="font-size:11px;color:var(--text-sec)">(${formatDuree(dl.heures)})</span>`:""}</div></div><button class="btn btn-success btn-small" onclick="encaisserDetteLigne('${c.id}','${dl.id}')">Encaisser</button></div>`;});
+        items.seances.forEach(si=>{html+=`<div class="list-item"><div><div style="font-size:12px;color:var(--text-sec)">${esc(formatDateShort(si.date))} • ${esc(formatHeure(si.heureDebut))}-${esc(formatHeure(si.heureFin))}</div><div style="display:flex;gap:6px;margin-top:2px"><span style="font-size:13px;font-weight:600;color:var(--warning)">${eur(si.montant)}</span>${si.matiere&&si.matiere!=="Maths"?`<span class="badge badge-accent">${esc(si.matiere)}</span>`:""}</div></div><button class="btn btn-success btn-small" onclick="encaisserSeance('${si.seanceId}','${si.eleveId}')">Encaisser</button></div>`;});
+        html+=`</div>`;});
+      const eIds=Object.keys(parEleve);html+=`<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px"><button class="btn btn-outline btn-outline-primary btn-small" onclick="openSMS('${c.id}',null)">📱 SMS global</button>`;
+      eIds.forEach(eid=>{if(eid!=="_x"){const el=getEleve(eid);if(el)html+=`<button class="btn btn-outline btn-outline-muted btn-small" onclick="openSMS('${c.id}','${eid}')">📱 ${esc(el.prenom)}</button>`;}});
+      html+=`</div></div>`;}
+    html+=`</div>`;});return html;
+}
+
+let statsYear=getYear(today());
+function renderStats(){
+  const years=new Set();data.seances.forEach(s=>years.add(getYear(s.date)));data.historique.forEach(h=>years.add(String(h.annee)));data.clients.forEach(c=>(c.dettesInitiales||[]).forEach(di=>{if(di.annee>0)years.add(String(di.annee));}));years.add(getYear(today()));
+  const sortedYears=[...years].sort().reverse();const monthData=[];
+  for(let m=1;m<=12;m++){const mk=`${statsYear}-${pad(m)}`;const ms=getMonthStats(mk);monthData.push({mois:m,label:MOIS_NOMS[m-1],ca:ms.ca,heures:ms.heures,prixMoyen:ms.prixMoyen,hasData:ms.ca>0||ms.heures>0});}
+  const totalCA=monthData.reduce((a,m)=>a+m.ca,0);const totalHeures=monthData.reduce((a,m)=>a+m.heures,0);const pma=totalHeures>0?totalCA/totalHeures:0;
+  let yOpts=sortedYears.map(y=>`<option value="${y}" ${y===statsYear?"selected":""}>${y}</option>`).join("");
+  let detailHtml=monthData.map(m=>`<div class="stat-row ${m.hasData?"":"faded"}"><span style="font-size:13px;font-weight:500;min-width:85px">${m.label}</span><div style="display:flex;gap:12px;align-items:center"><span class="mono" style="font-size:12px;color:var(--success)">${formatDuree(m.heures)}</span><span class="mono" style="font-size:12px;color:var(--primary);font-weight:600;min-width:65px;text-align:right">${eur(m.ca)}</span><span class="mono" style="font-size:11px;color:var(--accent);min-width:55px;text-align:right">${m.prixMoyen>0?eur(m.prixMoyen)+"/h":"—"}</span></div></div>`).join("");
+  return`<div class="row" style="margin-bottom:14px;align-items:center"><div class="field" style="flex:1;margin-bottom:0"><select onchange="statsYear=this.value;render()" aria-label="Année">${yOpts}</select></div><button class="btn btn-outline btn-outline-primary btn-small" onclick="openHistorique()">+ Historique</button></div>
+    <div class="card stats-card-gradient"><div style="font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text-sec)">📊 Totaux Maths ${statsYear}</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center"><div><div style="font-size:10px;color:var(--text-sec)">CA</div><div style="font-size:20px;font-weight:700;color:var(--primary)">${eur(totalCA)}</div></div><div><div style="font-size:10px;color:var(--text-sec)">Heures</div><div style="font-size:20px;font-weight:700;color:var(--success)">${formatDuree(totalHeures)}</div></div><div><div style="font-size:10px;color:var(--text-sec)">Moyenne par heure</div><div style="font-size:20px;font-weight:700;color:var(--accent)">${eur(pma)}</div></div></div></div>
+    <div class="card"><div style="font-size:13px;font-weight:700;margin-bottom:10px">Détail par mois</div>${detailHtml}</div>${renderHistoriqueList(statsYear)}`;
+}
+
+// ════════════════════════════════════════════
+// HISTORIQUE SÉANCES
+// ════════════════════════════════════════════
+let histoExpanded={};
+function toggleHisto(dateKey){histoExpanded[dateKey]=!histoExpanded[dateKey];document.getElementById("histoContent").innerHTML=renderHistoContent();}
+function renderHisto(){return`<div id="histoContent">${renderHistoContent()}</div>`;}
+function renderHistoContent(){
+  const byDate={};
+  data.seances.forEach(s=>{if(!byDate[s.date])byDate[s.date]={maths:[],autres:[]};if((s.matiere||"Maths")==="Maths")byDate[s.date].maths.push(s);else byDate[s.date].autres.push(s);});
+  const sortedDates=Object.keys(byDate).sort().reverse();
+  if(sortedDates.length===0)return`<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">Aucune séance enregistrée</div></div>`;
+  let html="";
+  sortedDates.forEach(dateKey=>{
+    const day=byDate[dateKey];
+    const hasMaths=day.maths.length>0;const hasAutres=day.autres.length>0;
+    let caMaths=0,hMaths=0;day.maths.forEach(s=>{s.participants.forEach(p=>{caMaths+=p.montant||0;});hMaths+=calcDuree(s.heureDebut,s.heureFin);});
+    let caAutres=0,hAutres=0;day.autres.forEach(s=>{s.participants.forEach(p=>{caAutres+=p.montant||0;});hAutres+=calcDuree(s.heureDebut,s.heureFin);});
+    let titre="";
+    if(hasMaths){titre=`${formatDateLong(dateKey)} · ${eur(caMaths)} · ${formatDuree(hMaths)}`;}
+    else{titre=`${formatDateLong(dateKey)} · ${eur(caAutres)} · ${formatDuree(hAutres)} · Autre matière`;}
+    const expanded=histoExpanded[dateKey];
+    let detailHtml="";
+    if(expanded){
+      detailHtml=`<div style="margin-top:10px">`;
+      if(day.maths.length>0){day.maths.forEach(s=>{const duree=calcDuree(s.heureDebut,s.heureFin);const total=s.participants.reduce((a,p)=>a+(p.montant||0),0);const allPaid=s.participants.every(p=>p.encaisse);detailHtml+=`<div class="seance-item" onclick="event.stopPropagation();openEditSeance('${s.id}')"><div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:12px;color:var(--text-sec)">${esc(formatHeure(s.heureDebut))}-${esc(formatHeure(s.heureFin))} · ${esc(formatDuree(duree))}</div>`;s.participants.forEach(p=>{const el=getEleve(p.eleveId);detailHtml+=`<div style="font-size:13px;margin-top:2px">${esc(el?.prenom||"?")} — ${eur(p.montant)}</div>`;});detailHtml+=`</div><span class="badge ${allPaid?"badge-success":"badge-warning"}">${allPaid?"Encaissé":"Impayé"}</span></div></div>`;});}
+      if(day.autres.length>0){detailHtml+=`<div style="font-size:12px;font-weight:600;color:var(--accent);margin-top:8px;margin-bottom:4px">Autres matières · ${eur(caAutres)} · ${formatDuree(hAutres)}</div>`;day.autres.forEach(s=>{const duree=calcDuree(s.heureDebut,s.heureFin);const total=s.participants.reduce((a,p)=>a+(p.montant||0),0);const allPaid=s.participants.every(p=>p.encaisse);detailHtml+=`<div class="seance-item" onclick="event.stopPropagation();openEditSeance('${s.id}')"><div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:12px;color:var(--text-sec)">${esc(s.matiere)} · ${esc(formatHeure(s.heureDebut))}-${esc(formatHeure(s.heureFin))} · ${esc(formatDuree(duree))}</div>`;s.participants.forEach(p=>{const el=getEleve(p.eleveId);detailHtml+=`<div style="font-size:13px;margin-top:2px">${esc(el?.prenom||"?")} — ${eur(p.montant)}</div>`;});detailHtml+=`</div><span class="badge ${allPaid?"badge-success":"badge-warning"}">${allPaid?"Encaissé":"Impayé"}</span></div></div>`;});}
+      detailHtml+=`</div>`;
+    }
+    html+=`<div class="card" style="cursor:pointer" onclick="toggleHisto('${dateKey}')"><div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:14px;font-weight:500">${titre}</div><span style="color:var(--text-mut);font-size:16px">${expanded?"▲":"▼"}</span></div>${detailHtml}</div>`;
+  });
+  return html;
+}
+
+let clientSearch="";
+let clientExpanded={};
+function toggleClient(id){clientExpanded[id]=!clientExpanded[id];document.getElementById("clientsContent").innerHTML=renderClientsContent();}
+function renderClients(){return`<div class="row" style="margin-bottom:14px"><input class="search-bar" placeholder="🔍 Rechercher..." value="${esc(clientSearch)}" oninput="clientSearch=this.value;render()" aria-label="Rechercher un client"><button class="btn btn-primary" onclick="openNewClient()">+ Client</button></div><div id="clientsContent">${renderClientsContent()}</div>`;}
+function renderClientsContent(){
+  const filtered=data.clients.filter(c=>!clientSearch||c.nom.toLowerCase().includes(clientSearch.toLowerCase()));const dpc=getDettesParClient();let listHtml="";
+  if(filtered.length===0){return`<div class="empty"><div class="empty-icon">👥</div><div class="empty-text">${clientSearch?"Aucun résultat":"Aucun client — commencez par en ajouter un"}</div></div>`;}
+  filtered.forEach(c=>{const expanded=clientExpanded[c.id];const cE=getElevesOfClient(c.id);const dette=dpc[c.id]?.montant||0;const eIds=cE.map(e=>e.id);const nb=data.seances.filter(s=>s.participants.some(p=>eIds.includes(p.eleveId))).length;
+    listHtml+=`<div class="card" style="cursor:pointer" onclick="toggleClient('${c.id}')"><div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:15px;font-weight:600">${esc(c.nom)}</div><span style="color:var(--text-mut);font-size:16px">${expanded?"▲":"▼"}</span></div>`;
+    if(expanded){listHtml+=`<div style="margin-top:10px" onclick="event.stopPropagation()"><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px"><span class="badge badge-primary">${eur(c.tarifDefaut)}/h</span>${cE.length>0?`<span class="badge badge-accent">${cE.map(e=>esc(e.prenom)).join(", ")}</span>`:""}</div><div style="font-size:11px;color:var(--text-mut);margin-bottom:10px">${nb} séance${nb!==1?"s":""}${dette>0?`<span style="color:var(--warning);margin-left:8px">Doit : ${eur(dette)}</span>`:""}</div><div style="display:flex;gap:6px"><button class="btn btn-primary btn-small" onclick="openDetailClient('${c.id}')">Voir détail</button><button class="btn btn-outline btn-outline-primary btn-small" onclick="openEditClient('${c.id}')">✏️ Modifier</button></div></div>`;}
+    listHtml+=`</div>`;});
+  return listHtml;
+}
+function openModal(html){document.getElementById("modalContainer").innerHTML=`<div class="overlay" onclick="closeModal()"><div class="modal" onclick="event.stopPropagation()">${html}</div></div>`;}
+function closeModal(){document.getElementById("modalContainer").innerHTML="";}
+
+let seanceForm={};
+function openNewSeance(){seanceForm={type:"individuel",date:today(),heureDebut:"",heureFin:"",matiere:"Maths",participants:[]};renderSeanceStep0();}
+function openEditSeance(id){const s=data.seances.find(x=>x.id===id);if(!s)return;seanceForm={...JSON.parse(JSON.stringify(s)),editId:id};renderSeanceStep2();}
+function renderSeanceStep0(){openModal(`<h2 class="modal-title">Nouvelle séance</h2><div style="font-size:13px;color:var(--text-sec);margin-bottom:14px">Type de séance</div><div class="row"><button class="btn btn-full ${seanceForm.type==="individuel"?"btn-primary":"btn-muted"}" style="padding:16px;border-radius:14px" onclick="seanceForm.type='individuel';seanceForm.participants=[];renderSeanceStep0()">👤 Individuelle</button><button class="btn btn-full ${seanceForm.type==="groupe"?"btn-primary":"btn-muted"}" style="padding:16px;border-radius:14px" onclick="seanceForm.type='groupe';seanceForm.participants=[];renderSeanceStep0()">👥 Groupée</button></div><button class="btn btn-primary btn-full" style="margin-top:16px" onclick="renderSeanceStep1()">Suivant →</button>`);}
+function renderSeanceStep1(){
+  const duree=calcDuree(seanceForm.heureDebut,seanceForm.heureFin);
+  openModal(`<h2 class="modal-title">Nouvelle séance</h2>${renderDateSelect("seance",seanceForm.date)}
+    ${renderTimeSelect("hd",seanceForm.heureDebut)}${renderTimeSelect("hf",seanceForm.heureFin)}
+    <div id="dureeInfo" style="font-size:13px;color:var(--success);margin-bottom:8px">${duree>0?"Durée : "+formatDuree(duree):""}</div>
+    <div class="field"><label>Matière</label><select onchange="seanceForm.matiere=this.value">${MATIERES.map(m=>`<option value="${m}" ${seanceForm.matiere===m?"selected":""}>${m}</option>`).join("")}</select></div>
+    <div class="row"><button class="btn btn-outline btn-outline-muted" onclick="renderSeanceStep0()">← Retour</button><button class="btn btn-primary btn-full" onclick="seanceForm.date=getDateFromSelects('seance');renderSeanceStep2()">Suivant →</button></div>`);
+}
+function renderSeanceStep2(){
+  const isEdit=!!seanceForm.editId;const duree=calcDuree(seanceForm.heureDebut,seanceForm.heureFin);
+  const allEleves=data.eleves.map(e=>{const c=getClient(e.clientId);return{...e,clientNom:c?.nom||"?",tarifDefaut:c?.tarifDefaut||0};});
+  const available=allEleves.filter(e=>!seanceForm.participants.find(p=>p.eleveId===e.id));
+  let editFieldsHtml="";
+  if(isEdit){editFieldsHtml=`${renderDateSelect("seanceEdit",seanceForm.date)}${renderTimeSelect("ehd",seanceForm.heureDebut)}${renderTimeSelect("ehf",seanceForm.heureFin)}<div id="dureeInfo" style="font-size:13px;color:var(--success);margin-bottom:8px">${calcDuree(seanceForm.heureDebut,seanceForm.heureFin)>0?"Durée : "+formatDuree(calcDuree(seanceForm.heureDebut,seanceForm.heureFin)):""}</div><div class="field"><label>Matière</label><select onchange="seanceForm.matiere=this.value">${MATIERES.map(m=>`<option value="${m}" ${seanceForm.matiere===m?"selected":""}>${m}</option>`).join("")}</select></div>`;}
+  let summaryHtml=!isEdit?`<div class="step-summary">${esc(formatDateLong(seanceForm.date))} • ${esc(formatHeure(seanceForm.heureDebut))} → ${esc(formatHeure(seanceForm.heureFin))} (${esc(formatDuree(duree))}) • ${esc(seanceForm.matiere)}</div>`:"";
+  let selectHtml="";if((seanceForm.type==="groupe"||seanceForm.participants.length===0)&&available.length>0){selectHtml=`<div class="field"><select onchange="addParticipant(this.value);this.value=''"><option value="">+ Ajouter un élève...</option>${available.map(e=>`<option value="${e.id}">${esc(e.prenom)} (${esc(e.clientNom)})</option>`).join("")}</select></div>`;}
+  let participantsHtml="";seanceForm.participants.forEach(p=>{const el=allEleves.find(e=>e.id===p.eleveId);const canRemove=seanceForm.type==="groupe"||seanceForm.participants.length>1;participantsHtml+=`<div class="participant-card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-weight:600;font-size:14px">${esc(el?.prenom||"?")} <span style="color:var(--text-mut);font-weight:400;font-size:12px">(${esc(el?.clientNom||"?")})</span></span>${canRemove?`<button class="btn-icon" style="color:var(--danger)" onclick="removeParticipant('${p.eleveId}')">✕</button>`:""}</div><div class="row"><div class="field" style="margin-bottom:0"><label>Montant (€)</label><input type="number" value="${p.montant}" onchange="updateParticipant('${p.eleveId}','montant',parseFloat(this.value)||0);renderSeanceStep2()"></div><div style="display:flex;align-items:flex-end"><button class="btn btn-small ${p.encaisse?"btn-success":"btn-warning"}" onclick="updateParticipant('${p.eleveId}','encaisse',${!p.encaisse});renderSeanceStep2()">${p.encaisse?"✓ Encaissé":"⏳ Différé"}</button></div></div></div>`;});
+  if(allEleves.length===0)participantsHtml=`<div style="font-size:13px;color:var(--warning);text-align:center;padding:16px">Ajoutez d'abord un client et ses élèves.</div>`;
+  const canSave=seanceForm.date&&seanceForm.heureDebut&&seanceForm.heureFin&&calcDuree(seanceForm.heureDebut,seanceForm.heureFin)>0&&seanceForm.participants.length>0&&seanceForm.participants.every(p=>p.montant>0);
+  let deleteBtn=isEdit?`<button class="btn btn-outline btn-outline-danger btn-full" style="margin-top:10px" onclick="deleteSeance('${seanceForm.editId}')">Supprimer cette séance</button>`:"";
+  openModal(`<h2 class="modal-title">${isEdit?"Modifier la séance":"Nouvelle séance"}</h2>${editFieldsHtml}${summaryHtml}<div style="font-size:13px;font-weight:600;margin-bottom:8px">Élève${seanceForm.type==="groupe"?"s":""} :</div>${selectHtml}${participantsHtml}<div class="row" style="margin-top:16px">${!isEdit?`<button class="btn btn-outline btn-outline-muted" onclick="renderSeanceStep1()">← Retour</button>`:`<button class="btn btn-outline btn-outline-muted" onclick="closeModal()">Annuler</button>`}<button class="btn btn-primary btn-full" ${!canSave?'style="opacity:0.4;cursor:not-allowed"':""} onclick="${canSave?(isEdit?"seanceForm.date=getDateFromSelects('seanceEdit');saveSeance()":"saveSeance()"):""}">${isEdit?"Enregistrer":"Valider la séance"}</button></div>${deleteBtn}`);
+}
+function addParticipant(eleveId){if(!eleveId||seanceForm.participants.find(p=>p.eleveId===eleveId))return;const el=data.eleves.find(e=>e.id===eleveId);const c=el?getClient(el.clientId):null;const duree=calcDuree(seanceForm.heureDebut,seanceForm.heureFin);const montant=Math.round(((c?.tarifDefaut||0)*duree)*100)/100;seanceForm.participants.push({eleveId,montant,encaisse:false});renderSeanceStep2();}
+function removeParticipant(eleveId){seanceForm.participants=seanceForm.participants.filter(p=>p.eleveId!==eleveId);renderSeanceStep2();}
+function updateParticipant(eleveId,field,value){const p=seanceForm.participants.find(p=>p.eleveId===eleveId);if(p)p[field]=value;}
+function saveSeance(){const{editId,...sd}=seanceForm;if(editId){const idx=data.seances.findIndex(s=>s.id===editId);if(idx>=0)data.seances[idx]={...data.seances[idx],...sd};showToast("Séance modifiée");}else{data.seances.push({id:uid(),...sd});showToast("Séance enregistrée");}updateLastModified();closeModal();render();}
+function deleteSeance(id){openConfirm("Supprimer cette séance ?",()=>{data.seances=data.seances.filter(s=>s.id!==id);updateLastModified();showToast("Séance supprimée");closeModal();render();});}
+function encaisserSeance(seanceId,eleveId){const s=data.seances.find(x=>x.id===seanceId);if(s){const p=s.participants.find(x=>x.eleveId===eleveId);if(p){p.encaisse=true;if((s.matiere||"Maths")!=="Maths"){data.caisse.autresEnAttente+=(p.montant||0);}}updateLastModified();showToast("Paiement encaissé ✓");render();}}
+function encaisserDetteLigne(clientId,detteId){const c=getClient(clientId);if(!c)return;const di=(c.dettesInitiales||[]).find(d=>d.id===detteId);if(di){di.encaisse=true;if((di.matiere||"Maths")!=="Maths"){data.caisse.autresEnAttente+=(di.montant||0);}updateLastModified();showToast(di.matiere==="Maths"?"Dette soldée ✓ — stats mises à jour":"Dette soldée ✓ — en attente de transfert");render();}}
+
+function openSMS(clientId,eleveIdFilter){
+  const client=getClient(clientId);const dpc=getDettesParClient();const dette=dpc[clientId];
+  if(!client||!dette){openModal(`<h2 class="modal-title">SMS</h2><div style="color:var(--text-mut)">Aucune donnée.</div><button class="btn btn-outline btn-outline-muted" onclick="closeModal()">Fermer</button>`);return;}
+  const lines=[];const parMatiere={};let totalFiltre=0;
+  dette.detteLines.filter(dl=>!eleveIdFilter||dl.eleveId===eleveIdFilter).sort((a,b)=>(a.annee*100+a.mois)-(b.annee*100+b.mois)).forEach(dl=>{const el=getEleve(dl.eleveId);lines.push(`${formatMoisAnnee(dl.mois,dl.annee)}, ${formatDuree(dl.heures)} avec ${el?.prenom||"?"}. ${eur(dl.montant)}. (${dl.matiere||"Maths"})`);const mat=dl.matiere||"Maths";parMatiere[mat]=(parMatiere[mat]||0)+(dl.montant||0);totalFiltre+=dl.montant||0;});
+  dette.seancesImpayes.filter(si=>!eleveIdFilter||si.eleveId===eleveIdFilter).sort((a,b)=>a.date.localeCompare(b.date)).forEach(si=>{const el=getEleve(si.eleveId);const duree=calcDuree(si.heureDebut,si.heureFin);lines.push(`${formatDateLong(si.date)}, de ${formatHeure(si.heureDebut)} à ${formatHeure(si.heureFin)}, ${formatDuree(duree)} avec ${el?.prenom||"?"}. ${eur(si.montant)}.`);const mat=si.matiere||"Maths";parMatiere[mat]=(parMatiere[mat]||0)+(si.montant||0);totalFiltre+=si.montant||0;});
+  if(lines.length===0){openModal(`<h2 class="modal-title">SMS</h2><div style="color:var(--text-mut)">Aucune dette.</div><button class="btn btn-outline btn-outline-muted" onclick="closeModal()">Fermer</button>`);return;}
+  let sms=lines.join("\n")+"\n";const matieres=Object.keys(parMatiere);if(matieres.length>1){sms+="\n";matieres.forEach(mat=>{sms+=`Total ${mat} : ${eur(parMatiere[mat])}.\n`;});}sms+=`\nTotal dû : ${eur(totalFiltre)}.`;
+  const filterLabel=eleveIdFilter?(getEleve(eleveIdFilter)?.prenom||"?"):"global";
+  openModal(`<h2 class="modal-title">SMS — ${esc(filterLabel)}</h2><div class="sms-box">${esc(sms)}</div><div class="row"><button class="btn btn-outline btn-outline-muted" onclick="closeModal()">Fermer</button><button class="btn btn-primary btn-full" id="copyBtn" onclick="copySMS()">📋 Copier</button></div>`);window._smsText=sms;
+}
+function copySMS(){const text=window._smsText;if(navigator.clipboard){navigator.clipboard.writeText(text).then(()=>{document.getElementById("copyBtn").textContent="✓ Copié !";document.getElementById("copyBtn").classList.replace("btn-primary","btn-success");});}else{const ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);document.getElementById("copyBtn").textContent="✓ Copié !";}}
+
+let clientForm={};let cfEleves=[];let cfDettes=[];let editingClientId=null;
+function openNewClient(){editingClientId=null;clientForm={nom:"",tarifDefaut:"",estAdulte:false};cfEleves=[];cfDettes=[];renderClientForm();}
+function openEditClient(id){const c=getClient(id);if(!c)return;editingClientId=id;clientForm={nom:c.nom,tarifDefaut:c.tarifDefaut,estAdulte:false};cfEleves=getElevesOfClient(id).map(e=>({tempId:e.id,prenom:e.prenom,existing:true}));cfDettes=(c.dettesInitiales||[]).filter(d=>!d.encaisse).map(d=>({...d,tempEleveId:d.eleveId}));renderClientForm();}
+function renderClientForm(){
+  const isEdit=!!editingClientId;
+  let elevesListHtml=cfEleves.length>0?cfEleves.map((e,i)=>`<div style="display:flex;justify-content:space-between;align-items:center;background:var(--primary-soft);border-radius:8px;padding:8px 12px;margin-bottom:6px;font-size:13px"><span style="font-weight:500">${esc(e.prenom)}</span><button class="btn-icon" style="color:var(--danger)" onclick="cfRemoveEleve(${i})">✕</button></div>`).join(""):`<div style="font-size:12px;color:var(--text-mut);font-style:italic;margin-bottom:6px">Aucun élève ajouté.</div>`;
+  let dettesListHtml=cfDettes.length>0?cfDettes.map((d,i)=>{const elName=cfEleves.find(e=>e.tempId===d.tempEleveId)?.prenom||"?";return`<div style="display:flex;justify-content:space-between;align-items:center;background:var(--warning-soft);border-radius:8px;padding:8px 12px;margin-bottom:6px;font-size:13px"><div><span style="font-weight:500">${esc(elName)}</span> · ${esc(formatMoisAnnee(d.mois,d.annee))} · ${esc(d.matiere||"Maths")}<div style="font-size:11px;color:var(--text-sec);margin-top:2px">${eur(d.montant)} · ${formatDuree(d.heures)}</div></div><button class="btn-icon" style="color:var(--danger)" onclick="cfRemoveDette(${i})">✕</button></div>`;}).join(""):`<div style="font-size:12px;color:var(--text-mut);font-style:italic;margin-bottom:6px">Aucune dette initiale.</div>`;
+  let eleveOptions=cfEleves.map(e=>`<option value="${e.tempId}">${esc(e.prenom)}</option>`).join("");
+  let detteFormHtml=cfEleves.length>0?`<div style="background:var(--bg);border-radius:10px;padding:10px;border:1px solid var(--border);margin-bottom:6px"><div class="field" style="margin-bottom:6px"><label>Élève</label><select id="cfDetteEleve">${eleveOptions}</select></div><div class="field" style="margin-bottom:6px"><label>Matière</label><select id="cfDetteMatiere">${MATIERES.map(m=>`<option value="${m}">${m}</option>`).join("")}</select></div><div class="row"><div class="field" style="margin-bottom:6px"><label>Mois</label><select id="cfDetteMois">${MOIS_NOMS.map((n,i)=>`<option value="${i+1}">${n}</option>`).join("")}</select></div><div class="field" style="margin-bottom:6px"><label>Année</label><input id="cfDetteAnnee" type="number" value="2026"></div></div><div class="row"><div class="field" style="margin-bottom:6px"><label>Montant (€)</label><input id="cfDetteMontant" type="number" placeholder="0"></div><div class="field" style="margin-bottom:6px"><label>Heures</label><input id="cfDetteHeures" type="number" step="0.5" placeholder="0"></div></div><button class="btn btn-outline btn-outline-primary btn-small" onclick="cfAddDette()">+ Ajouter cette dette</button></div>`:`<div style="font-size:12px;color:var(--text-sec);font-style:italic">Ajoutez d'abord un élève.</div>`;
+  openModal(`<h2 class="modal-title">${isEdit?"Modifier le client":"Nouveau client"}</h2><div class="field"><label>Nom du client</label><input id="cfNom" value="${esc(clientForm.nom)}" placeholder="Ex : Mme Dupont" oninput="clientForm.nom=this.value"></div><div class="field"><label>Tarif horaire (€/h)</label><input id="cfTarif" type="number" value="${clientForm.tarifDefaut}" placeholder="20" oninput="clientForm.tarifDefaut=parseFloat(this.value)||0"></div>${!isEdit?`<label class="check-label"><input type="checkbox" id="cfAdulte" ${clientForm.estAdulte?"checked":""} onchange="clientForm.estAdulte=this.checked"> Client adulte (est aussi l'élève)</label>`:""}<div class="divider"></div><div style="font-size:14px;font-weight:700;color:var(--accent);margin-bottom:10px">👤 Élèves</div>${elevesListHtml}<div style="background:var(--bg);border-radius:10px;padding:10px;border:1px solid var(--border);margin-bottom:6px"><div class="field" style="margin-bottom:6px"><label>Prénom de l'élève</label><input id="cfElevePrenom" placeholder="Ex : Djibril"></div><button class="btn btn-outline btn-outline-primary btn-small" onclick="cfAddEleve()">+ Ajouter cet élève</button></div><div class="divider"></div><div style="font-size:14px;font-weight:700;color:var(--warning);margin-bottom:10px">💶 Dettes initiales</div>${dettesListHtml}${detteFormHtml}<div class="divider"></div><div class="row"><button class="btn btn-outline btn-outline-muted" onclick="closeModal()">Annuler</button><button class="btn btn-primary btn-full" onclick="saveClientForm()">Enregistrer</button></div>${isEdit?`<button class="btn btn-outline btn-outline-danger btn-full" style="margin-top:10px" onclick="deleteClient('${editingClientId}')">Supprimer ce client</button>`:""}`);
+}
+function cfAddEleve(){const input=document.getElementById("cfElevePrenom");const prenom=input.value.trim();if(!prenom){showToast("Prénom requis","danger");return;}cfEleves.push({tempId:uid(),prenom,existing:false});input.value="";renderClientForm();}
+function cfRemoveEleve(i){const removed=cfEleves[i];cfDettes=cfDettes.filter(d=>d.tempEleveId!==removed.tempId);cfEleves.splice(i,1);renderClientForm();}
+function cfAddDette(){const eleveId=document.getElementById("cfDetteEleve").value;const matiere=document.getElementById("cfDetteMatiere").value;const mois=parseInt(document.getElementById("cfDetteMois").value)||0;const annee=parseInt(document.getElementById("cfDetteAnnee").value)||0;const montant=parseFloat(document.getElementById("cfDetteMontant").value)||0;const heures=parseFloat(document.getElementById("cfDetteHeures").value)||0;if(!eleveId){showToast("Sélectionnez un élève","danger");return;}if(montant<=0){showToast("Montant requis","danger");return;}if(!mois||!annee){showToast("Mois et année requis","danger");return;}cfDettes.push({id:uid(),tempEleveId:eleveId,mois,annee,montant,heures,matiere,encaisse:false});renderClientForm();}
+function cfRemoveDette(i){cfDettes.splice(i,1);renderClientForm();}
+function saveClientForm(){const nom=clientForm.nom?.trim();const tarifDefaut=parseFloat(clientForm.tarifDefaut)||0;if(!nom){showToast("Nom requis","danger");return;}if(tarifDefaut<=0){showToast("Tarif requis","danger");return;}if(!editingClientId&&clientForm.estAdulte){if(!cfEleves.find(e=>e.prenom.toLowerCase()===nom.toLowerCase()))cfEleves.unshift({tempId:uid(),prenom:nom,existing:false});}if(cfEleves.length===0&&!editingClientId){showToast("Ajoutez au moins un élève","danger");return;}
+  if(editingClientId){const c=getClient(editingClientId);c.nom=nom;c.tarifDefaut=tarifDefaut;const existingIds=cfEleves.filter(e=>e.existing).map(e=>e.tempId);getElevesOfClient(editingClientId).forEach(oe=>{if(!existingIds.includes(oe.id)){if(!data.seances.some(s=>s.participants.some(p=>p.eleveId===oe.id)))data.eleves=data.eleves.filter(e=>e.id!==oe.id);}});const tempToReal={};cfEleves.forEach(e=>{if(e.existing){tempToReal[e.tempId]=e.tempId;const ex=getEleve(e.tempId);if(ex)ex.prenom=e.prenom;}else{const realId=uid();data.eleves.push({id:realId,clientId:editingClientId,prenom:e.prenom});tempToReal[e.tempId]=realId;}});const encaissees=(c.dettesInitiales||[]).filter(d=>d.encaisse);c.dettesInitiales=[...encaissees,...cfDettes.map(d=>({id:d.id||uid(),eleveId:tempToReal[d.tempEleveId]||d.tempEleveId,mois:d.mois,annee:d.annee,montant:d.montant,heures:d.heures,matiere:d.matiere||"Maths",encaisse:false}))];}
+  else{const clientId=uid();const nc={id:clientId,nom,tarifDefaut,dettesInitiales:[]};const tempToReal={};cfEleves.forEach(e=>{const realId=uid();data.eleves.push({id:realId,clientId,prenom:e.prenom});tempToReal[e.tempId]=realId;});nc.dettesInitiales=cfDettes.map(d=>({id:uid(),eleveId:tempToReal[d.tempEleveId]||"",mois:d.mois,annee:d.annee,montant:d.montant,heures:d.heures,matiere:d.matiere||"Maths",encaisse:false}));data.clients.push(nc);}
+  updateLastModified();showToast(editingClientId?"Client modifié":"Client ajouté");closeModal();render();}
+function deleteClient(id){const c=getClient(id);const cE=getElevesOfClient(id);const eIds=cE.map(e=>e.id);if(data.seances.some(s=>s.participants.some(p=>eIds.includes(p.eleveId)))){showToast("Impossible : séances existantes","danger");return;}openConfirm(`Supprimer ${c?.nom||""} ?`,()=>{data.eleves=data.eleves.filter(e=>e.clientId!==id);data.clients=data.clients.filter(c=>c.id!==id);updateLastModified();showToast("Client supprimé");closeModal();render();});}
+
+function openDetailClient(id){
+  const c=getClient(id);if(!c)return;const cE=getElevesOfClient(id);const eIds=cE.map(e=>e.id);const cS=data.seances.filter(s=>s.participants.some(p=>eIds.includes(p.eleveId))).sort((a,b)=>b.date.localeCompare(a.date));
+  let elevesHtml=cE.length>0?cE.map(e=>`<div class="list-item"><span style="font-size:14px">${esc(e.prenom)}</span></div>`).join(""):`<div style="font-size:12px;color:var(--text-mut)">Aucun élève</div>`;
+  let dettesHtml="";(c.dettesInitiales||[]).filter(d=>!d.encaisse).forEach(d=>{const el=getEleve(d.eleveId);dettesHtml+=`<div class="list-item"><div><span style="font-size:13px">${esc(el?.prenom||"?")} · ${esc(formatMoisAnnee(d.mois,d.annee))} · ${esc(d.matiere||"Maths")} · ${eur(d.montant)}</span></div><span class="badge badge-warning">Non soldée</span></div>`;});
+  (c.dettesInitiales||[]).filter(d=>d.encaisse).forEach(d=>{const el=getEleve(d.eleveId);dettesHtml+=`<div class="list-item"><div><span style="font-size:13px">${esc(el?.prenom||"?")} · ${esc(formatMoisAnnee(d.mois,d.annee))} · ${esc(d.matiere||"Maths")} · ${eur(d.montant)}</span></div><span class="badge badge-success">Soldée</span></div>`;});
+  if(!dettesHtml)dettesHtml=`<div style="font-size:12px;color:var(--text-mut)">Aucune dette initiale</div>`;
+  let seancesHtml="";if(cS.length===0)seancesHtml=`<div style="font-size:12px;color:var(--text-mut);padding:8px 0">Aucune séance</div>`;
+  else{cS.slice(0,10).forEach(s=>{const duree=calcDuree(s.heureDebut,s.heureFin);const pC=s.participants.filter(p=>eIds.includes(p.eleveId));seancesHtml+=`<div class="seance-item" onclick="openEditSeance('${s.id}')"><div style="font-size:12px;color:var(--text-sec)">${formatDateShort(s.date)} • ${formatHeure(s.heureDebut)}-${formatHeure(s.heureFin)} • ${formatDuree(duree)}</div>`;pC.forEach(p=>{const el=getEleve(p.eleveId);seancesHtml+=`<div style="display:flex;justify-content:space-between;font-size:13px;margin-top:2px"><span>${esc(el?.prenom||"?")} — ${eur(p.montant)}</span><span class="badge ${p.encaisse?"badge-success":"badge-warning"}">${p.encaisse?"Encaissé":"Différé"}</span></div>`;});seancesHtml+=`</div>`;});}
+  openModal(`<h2 class="modal-title">${esc(c.nom)}</h2><div style="margin-bottom:14px"><span class="badge badge-primary">${eur(c.tarifDefaut)}/h</span></div><div style="font-size:13px;font-weight:700;margin-bottom:8px">Élèves (${cE.length})</div>${elevesHtml}<div style="font-size:13px;font-weight:700;margin-bottom:8px;margin-top:14px">Dettes initiales</div>${dettesHtml}<div style="font-size:13px;font-weight:700;margin-bottom:8px;margin-top:14px">Dernières séances</div>${seancesHtml}<div class="row" style="margin-top:16px"><button class="btn btn-outline btn-outline-muted" onclick="closeModal()">Fermer</button><button class="btn btn-primary btn-small" onclick="openEditClient('${id}')">✏️ Modifier</button></div>`);
+}
+
+function openHistorique(){const annee=parseInt(statsYear)||2025;openModal(`<h2 class="modal-title">Données historiques</h2><div style="font-size:12px;color:var(--text-sec);margin-bottom:14px">Saisie manuelle — Maths uniquement</div><div class="row"><div class="field"><label>Année</label><input id="hAnnee" type="number" value="${annee}"></div><div class="field"><label>Mois</label><select id="hMois">${MOIS_NOMS.map((n,i)=>`<option value="${i+1}">${n}</option>`).join("")}</select></div></div><div class="field"><label>CA (€)</label><input id="hCA" type="number" value="0"></div><div class="field"><label>Heures</label><input id="hHeures" type="number" step="0.5" value="0"></div><div class="row"><button class="btn btn-outline btn-outline-muted" onclick="closeModal()">Annuler</button><button class="btn btn-primary btn-full" onclick="saveHistorique()">Enregistrer</button></div>`);document.getElementById("hAnnee").addEventListener("change",prefillHistorique);document.getElementById("hMois").addEventListener("change",prefillHistorique);}
+function prefillHistorique(){const annee=parseInt(document.getElementById("hAnnee").value);const mois=parseInt(document.getElementById("hMois").value);const existing=data.historique.find(h=>h.annee===annee&&h.mois===mois);document.getElementById("hCA").value=existing?existing.ca:0;document.getElementById("hHeures").value=existing?existing.heures:0;}
+function saveHistorique(){const annee=parseInt(document.getElementById("hAnnee").value);const mois=parseInt(document.getElementById("hMois").value);const ca=parseFloat(document.getElementById("hCA").value)||0;const heures=parseFloat(document.getElementById("hHeures").value)||0;const idx=data.historique.findIndex(h=>h.annee===annee&&h.mois===mois);if(idx>=0)data.historique[idx]={annee,mois,ca,heures};else data.historique.push({annee,mois,ca,heures});saveData();showToast("Données enregistrées");closeModal();render();}
+function renderHistoriqueList(year){const yh=data.historique.filter(h=>h.annee===parseInt(year)).sort((a,b)=>a.mois-b.mois);if(yh.length===0)return"";let items=yh.map(h=>{const pm=h.heures>0?h.ca/h.heures:0;return`<div class="list-item" style="padding:10px 0"><div><div style="font-size:14px;font-weight:500">${MOIS_NOMS[h.mois-1]} ${h.annee}</div><div style="font-size:12px;color:var(--text-sec);margin-top:2px">${eur(h.ca)} · ${formatDuree(h.heures)} · ${pm>0?eur(pm)+"/h":"—"}</div></div><div style="display:flex;gap:6px"><button class="btn btn-outline btn-outline-primary btn-small" onclick="openEditHistorique(${h.annee},${h.mois})">✏️</button><button class="btn btn-small" style="background:var(--danger)" onclick="deleteHistorique(${h.annee},${h.mois})">🗑️</button></div></div>`;}).join("");return`<div class="card"><div style="font-size:13px;font-weight:700;margin-bottom:10px">📝 Historique (${year})</div>${items}</div>`;}
+function openEditHistorique(annee,mois){const h=data.historique.find(x=>x.annee===annee&&x.mois===mois);if(!h)return;openModal(`<h2 class="modal-title">Modifier — ${MOIS_NOMS[mois-1]} ${annee}</h2><div class="field"><label>CA (€)</label><input id="hCA" type="number" value="${h.ca}"></div><div class="field"><label>Heures</label><input id="hHeures" type="number" step="0.5" value="${h.heures}"></div><div class="row"><button class="btn btn-outline btn-outline-muted" onclick="closeModal()">Annuler</button><button class="btn btn-primary btn-full" onclick="saveEditHistorique(${annee},${mois})">Enregistrer</button></div>`);}
+function saveEditHistorique(annee,mois){const ca=parseFloat(document.getElementById("hCA").value)||0;const heures=parseFloat(document.getElementById("hHeures").value)||0;const idx=data.historique.findIndex(h=>h.annee===annee&&h.mois===mois);if(idx>=0)data.historique[idx]={annee,mois,ca,heures};saveData();showToast("Données modifiées");closeModal();render();}
+function deleteHistorique(annee,mois){openConfirm(`Supprimer ${MOIS_NOMS[mois-1]} ${annee} ?`,()=>{data.historique=data.historique.filter(h=>!(h.annee===annee&&h.mois===mois));saveData();showToast("Données supprimées");render();});}
+function openConfirm(message,onConfirm){window._confirmAction=onConfirm;openModal(`<div style="text-align:center;padding:10px 0"><div style="font-size:32px;margin-bottom:12px">⚠️</div><div style="font-size:15px;font-weight:600;margin-bottom:20px">${esc(message)}</div><div class="row" style="justify-content:center"><button class="btn btn-outline btn-outline-muted" onclick="closeModal()">Annuler</button><button class="btn btn-danger" onclick="window._confirmAction();closeModal()">Supprimer</button></div></div>`);}
+function exportDataFile(){const json=JSON.stringify(data,null,2);const blob=new Blob([json],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="maths-cours-"+today()+".json";document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);showToast("Fichier exporté ✓");}
+function exportDataText(){const json=JSON.stringify(data,null,2);openModal(`<h2 class="modal-title">Exporter (texte)</h2><div style="font-size:12px;color:var(--text-sec);margin-bottom:12px">Sélectionnez et copiez le texte.</div><textarea id="exportText" readonly style="width:100%;height:200px;padding:10px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'DM Mono',monospace;font-size:11px;resize:none">${esc(json)}</textarea><div class="row" style="margin-top:12px"><button class="btn btn-primary btn-full" onclick="document.getElementById('exportText').select();document.getElementById('exportText').setSelectionRange(0,99999)">Tout sélectionner</button><button class="btn btn-outline btn-outline-muted" onclick="closeModal()">Fermer</button></div>`);}
+function importFromFile(event){const file=event.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=function(e){try{const imported=JSON.parse(e.target.result);if(!imported.clients||!imported.seances)throw new Error("x");data={clients:[],eleves:[],seances:[],historique:[],caisse:{maths:0,autres:0,autresEnAttente:0},lastModified:null,...imported};if(!data.caisse)data.caisse={maths:0,autres:0,autresEnAttente:0};if(!data.caisse.autresEnAttente)data.caisse.autresEnAttente=0;migrateData();saveData();showToast("Données importées ✓");render();}catch(err){showToast("Erreur : fichier invalide","danger");}};reader.readAsText(file);event.target.value="";}
+function openImportTextModal(){openModal(`<h2 class="modal-title">Importer (texte)</h2><div style="font-size:12px;color:var(--warning);margin-bottom:12px">Collez le texte JSON. Données remplacées.</div><textarea id="importText" style="width:100%;height:200px;padding:10px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'DM Mono',monospace;font-size:11px;resize:none" placeholder="Collez votre JSON ici..."></textarea><div id="importError" style="color:var(--danger);font-size:13px;margin-top:8px;display:none"></div><div id="importSuccess" style="color:var(--success);font-size:13px;margin-top:8px;display:none;font-weight:600"></div><div class="row" style="margin-top:12px"><button class="btn btn-outline btn-outline-muted" onclick="closeModal()">Annuler</button><button class="btn btn-primary btn-full" onclick="importFromText()">Importer</button></div>`);}
+function importFromText(){const text=document.getElementById("importText").value.trim();const errEl=document.getElementById("importError");const succEl=document.getElementById("importSuccess");errEl.style.display="none";succEl.style.display="none";if(!text){errEl.textContent="Veuillez coller le JSON.";errEl.style.display="block";return;}try{const imported=JSON.parse(text);if(!imported.clients||!imported.seances)throw new Error("x");data={clients:[],eleves:[],seances:[],historique:[],caisse:{maths:0,autres:0,autresEnAttente:0},lastModified:null,...imported};if(!data.caisse)data.caisse={maths:0,autres:0,autresEnAttente:0};if(!data.caisse.autresEnAttente)data.caisse.autresEnAttente=0;migrateData();saveData();succEl.textContent="Importé ! Vous pouvez fermer.";succEl.style.display="block";render();}catch(err){errEl.textContent="JSON invalide.";errEl.style.display="block";}}
+loadData();render();
+</script>
+</body>
+</html>
